@@ -26,7 +26,7 @@ export interface IUser {
 }
 
 export interface IUserDoc extends IUser, Document {
-  isPassowrdMatch(password: string): boolean;
+  isPasswordMatch(password: string): boolean;
 }
 
 export interface IUserModel extends Model<IUserDoc> {
