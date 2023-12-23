@@ -1,7 +1,6 @@
 import compression from 'compression';
 import cors from 'cors';
 import express from 'express';
-import fs from 'fs';
 import helmet from 'helmet';
 import httpStatus from 'http-status';
 import passport from 'passport';
@@ -14,13 +13,6 @@ import { specs } from './routes/docs.route';
 import { ApiError, error, morgan } from './utils';
 
 const app = express();
-
-// upload directory
-const uploadDir = './uploads';
-
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir);
-}
 
 if (config.env !== 'test') {
   app.use(morgan.successHandler);
