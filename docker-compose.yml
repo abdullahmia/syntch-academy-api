@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  node-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - MONGO_HOST=mongodb://mongodb:27017/kwicon-db
+      - JWT_SECRET=thisisasamplesecret
+      - JWT_ACCESS_EXPIRATION_MINUTES=30
+      - JWT_REFRESH_EXPIRATION_DAYS=30
+      - JWT_RESET_PASSWORD_EXPIRATION_MINUTES=10
+      - JWT_VERIFY_EMAIL_EXPIRATION_MINUTES=10
+    ports:
+      - '8000:8000'
