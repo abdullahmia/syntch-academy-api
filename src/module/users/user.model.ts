@@ -109,7 +109,7 @@ userSchema.static(
  */
 userSchema.static(
   'isUsernameTaken',
-  async function (username: string, excludeUserId?: ObjectId): Promise<boolean> {
+  async function (username: string, excludeUserId?: string): Promise<boolean> {
     const user = await this.findOne({ username, _id: { $ne: excludeUserId } });
     return !!user;
   }

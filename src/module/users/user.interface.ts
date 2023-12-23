@@ -34,7 +34,7 @@ export interface IUserModel extends Model<IUserDoc> {
   isUsernameTaken(username: string): boolean;
   paginate(filter: Record<string, any>, options: Record<string, any>): Promise<QueryResult>;
 }
-
+export type UpdateUserBody = Partial<IUser>;
 export type IUserBody = Partial<IUser>;
 
 export type NewCreatedUser = Omit<IUser, 'role' | 'status' | 'profilePicture'>;

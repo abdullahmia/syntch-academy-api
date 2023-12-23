@@ -7,8 +7,6 @@ import { IUserDoc } from '../users';
 const verityCallback =
   (req: Request, resolve: any, reject: any) => (error: Error, user: IUserDoc, info: string) => {
     console.log('error', error);
-    // console.log('user', user);
-    // console.log('info', info);
     if (error || info || !user) {
       return reject(new ApiError(httpStatus.UNAUTHORIZED, 'Please authenticate'));
     }
