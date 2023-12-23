@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import config from '../config';
-import docsRoutes from './docs.route';
+import authRoutes from './auth.routes';
+import docsRoutes from './docs.routes';
+import userRoutes from './user.routes';
 
 const router = Router();
 
@@ -9,7 +11,16 @@ interface IRoute {
   router: Router;
 }
 
-const defaultRoutes: IRoute[] = [];
+const defaultRoutes: IRoute[] = [
+  {
+    path: '/users',
+    router: userRoutes
+  },
+  {
+    path: '/auth',
+    router: authRoutes
+  }
+];
 
 const devIRoute: IRoute[] = [
   {

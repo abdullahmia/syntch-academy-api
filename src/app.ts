@@ -4,12 +4,11 @@ import express from 'express';
 import helmet from 'helmet';
 import httpStatus from 'http-status';
 import passport from 'passport';
+import swagger from 'swagger-ui-express';
 import config from './config';
 import { middleware as xss } from './middlewares';
-// import { jwtStrategy } from './modules/auth';
-import swagger from 'swagger-ui-express';
 import routes from './routes';
-import { specs } from './routes/docs.route';
+import { specs } from './routes/docs.routes';
 import { ApiError, error, morgan } from './utils';
 
 const app = express();
