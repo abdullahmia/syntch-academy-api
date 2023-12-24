@@ -22,6 +22,9 @@
     "docker:dev": "docker build -t syntch.academy . && docker run -p 8000:8000 syntch.academy",
     "docker:stop": "docker stop $(docker ps -a -q --filter ancestor=syntch.academy --format={{.ID}})"
   },
+  "lint-staged": {
+    "src/**/*.ts": "pnpm lint:fix"
+  },
   "keywords": [],
   "license": "ISC",
   "devDependencies": {
