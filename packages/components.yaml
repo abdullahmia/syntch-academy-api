@@ -1,0 +1,120 @@
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        socialProfile:
+          type: object
+          properties:
+            linkedIn:
+              type: string
+              format: uri
+            github:
+              type: string
+              format: uri
+            website:
+              type: string
+              format: uri
+        firstName:
+          type: string
+        lastName:
+          type: string
+        username:
+          type: string
+        displayName:
+          type: string
+        email:
+          type: string
+          format: email
+        phoneNumber:
+          type: string
+          format: phone
+        occupation:
+          type: string
+        role:
+          type: string
+          enum: [user, admin]
+        status:
+          type: string
+          enum: [active, inactive, pending]
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        id:
+          type: string
+      example:
+        socialProfile:
+          linkedIn: https://www.linkedin.com/in/johndoe
+          github: https://github.com/johndoe
+          website: https://www.johndoe.com
+        firstName: John
+        lastName: Doe
+        username: johndoe
+        displayName: JohnD
+        email: abdullahbang1971@gmail.com
+        phoneNumber: 123-456-7890
+        occupation: Software Engineer
+        role: user
+        status: active
+        createdAt: 2023-12-23T21:12:29.254Z
+        updatedAt: 2023-12-23T21:35:20.715Z
+        id: 65874d3d3c1d8f03287c807a
+
+    Token:
+      type: string
+      example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ODc0ZDNkM2MxZDhmMDMyODdjODA3YSIsImVtYWlsIjoiYWJkdWxsYWhiYW5nMTk3MUBnbWFpbC5jb20iLCJyb2xlIjoidXNlciIsInN0YXR1cyI6ImFjdGl2ZSIsInVzZXJuYW1lIjoiam9obmRvZSIsImlhdCI6MTcwMzM5NzE0MCwiZXhwIjoxNzA0MDAxOTQwfQ.2IMB129_1_Pu1ldvCzIRq5yixTNt5l1zXNu_eY3VK6s
+
+    Error:
+      type: object
+      properties:
+        code:
+          type: number
+        message:
+          type: string
+
+  responses:
+    DuplicateEmail:
+      description: Email already taken
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 400
+            message: Email already taken
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 401
+            message: Please authenticate
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 403
+            message: Forbidden
+    NotFound:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 404
+            message: Not found
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
