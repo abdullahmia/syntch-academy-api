@@ -7,7 +7,7 @@ const router = express.Router();
 
 export const specs = swaggerJSDoc({
   swaggerDefinition,
-  apis: ['src/routes/*.ts', 'packages/components.yaml']
+  apis: ['packages/components.yaml', 'src/routes/*.ts']
 });
 
 router.use('/', swaggerUi.serve);
