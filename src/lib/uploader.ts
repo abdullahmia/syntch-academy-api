@@ -1,21 +1,20 @@
-import { Request } from 'express';
-import multer, { Multer } from 'multer';
+import multer from 'multer';
+import path from 'path';
+const storage = multer.diskStorage({});
 
-const storage: multer.StorageEngine = multer.diskStorage({
-  destination: (
-    req: Request,
-    file: any,
-    cb: (error: Error | null, destination: string) => void
-  ) => {
-    cb(null, 'uploads/');
-  },
-  filename: (req: Request, file: any, cb: (error: Error | null, filename: string) => void) => {
-    const date = new Date().toISOString().replace(/:/g, '-');
-    const filename = `${date}`;
-    cb(null, filename);
+let validateFile = function (file: any, cb: any) {
+  let allowedFileTypes = /jpeg|jpg|png/;
+  const extension = allowedFileTypes.test(path.extname(file.originalname).toLowerCase());
+  const mimeType = allowedFileTypes.test(file.mimetype);
+  if (extension && mimeType) {
+    return cb(null, true);
+  } else {
+    cb('Invalid file type. Only JPEG, PNG file are allowed.');
+  }
+};
+export const imageUploader = multer({
+  storage: storage,
+  fileFilter: function (req, file, callback) {
+    validateFile(file, callback);
   }
 });
-
-const uploader: Multer = multer({ storage: storage });
-
-export default uploader;

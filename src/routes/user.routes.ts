@@ -1,4 +1,5 @@
 import express, { Router } from 'express';
+import { imageUploader } from '../lib/uploader';
 import { auth } from '../module/auth';
 import { userController, userValidation } from '../module/users';
 import { validate } from '../validation';
@@ -10,10 +11,20 @@ router
   .post(auth('manageUsers'), validate(userValidation.createUser), userController.createUser)
   .get(auth('getUsers'), validate(userValidation.getUsers), userController.getUsers);
 
+router.patch(
+  '/upload-profile-picture',
+  auth('updateSelf'),
+  imageUploader.single('image'),
+  userController.uploadProfilePicture
+);
+
+router.delete('/delete-profile-picture', auth('manageUsers'), userController.deleteProfilePicture);
+
 router
   .route('/:userId')
   .get(auth('getUsers'), validate(userValidation.getUser), userController.getUser)
-  .patch(auth('manageUsers'), validate(userValidation.updateUser), userController.updateUser);
+  .patch(auth('manageUsers'), validate(userValidation.updateUser), userController.updateUser)
+  .delete(auth('manageUsers'), validate(userValidation.deleteUser), userController.deleteUser);
 
 export default router;
 
@@ -307,4 +318,145 @@ export default router;
  *         $ref: '#/components/responses/NotFound'
  */
 
-// Ensure you have the necessary Swagger components and security schemes included
+/**
+ * @swagger
+ * /users/{userId}:
+ *   delete:
+ *     summary: Delete user by ID
+ *     tags: [Users]
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the user to delete
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       "200":
+ *         description: User successfully deleted
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Success message
+ *             example:
+ *               message: User has been deleted
+ *       "401":
+ *         $ref: '#/components/responses/Unauthorized'
+ *       "403":
+ *         $ref: '#/components/responses/Forbidden'
+ *       "404":
+ *         $ref: '#/components/responses/NotFound'
+ */
+
+/**
+ * @swagger
+ * /users/upload-profile-picture:
+ *   patch:
+ *     summary: Update user's profile picture
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - multipart/form-data
+ *     parameters:
+ *       - in: formData
+ *         name: image
+ *         type: file
+ *         required: true
+ *         description: The image file to upload for the user's profile picture
+ *     responses:
+ *       "200":
+ *         description: Profile picture successfully updated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Success message
+ *                 updatedUser:
+ *                   $ref: '#/components/schemas/User'
+ *             example:
+ *               message: Profile picture has been updated
+ *               updatedUser:
+ *                 socialProfile:
+ *                   linkedIn: https://www.linkedin.com/in/johndoe
+ *                   github: https://github.com/johndoe
+ *                   website: https://www.johndoe.com
+ *                 firstName: Abdulalh
+ *                 lastName: Mia
+ *                 username: abdullah1971
+ *                 displayName: abdullah
+ *                 email: abdullahbang1971@gmail.com
+ *                 phoneNumber: 123-456-7890
+ *                 occupation: Software Engineer
+ *                 role: admin
+ *                 status: active
+ *                 createdAt: "2023-12-23T21:12:29.254Z"
+ *                 updatedAt: "2023-12-24T07:21:19.414Z"
+ *                 id: "65874d3d3c1d8f03287c807a"
+ *       "401":
+ *         $ref: '#/components/responses/Unauthorized'
+ *       "403":
+ *         $ref: '#/components/responses/Forbidden'
+ *       "404":
+ *         $ref: '#/components/responses/NotFound'
+ *       "415":
+ *         $ref: '#/components/responses/UnsupportedMediaType'
+ */
+
+/**
+ * @swagger
+ * /users/delete-profile-picture:
+ *   delete:
+ *     summary: Delete user's profile picture
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       "200":
+ *         description: Profile picture successfully deleted
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Success message
+ *                 updatedUser:
+ *                   $ref: '#/components/schemas/User'
+ *             example:
+ *               message: Profile picture has been deleted
+ *               updatedUser:
+ *                 socialProfile:
+ *                   linkedIn: https://www.linkedin.com/in/johndoe
+ *                   github: https://github.com/johndoe
+ *                   website: https://www.johndoe.com
+ *                 firstName: Abdulalh
+ *                 lastName: Mia
+ *                 username: abdullah1971
+ *                 displayName: abdullah
+ *                 email: abdullahbang1971@gmail.com
+ *                 phoneNumber: 123-456-7890
+ *                 occupation: Software Engineer
+ *                 role: admin
+ *                 status: active
+ *                 createdAt: "2023-12-23T21:12:29.254Z"
+ *                 updatedAt: "2023-12-24T07:21:19.414Z"
+ *                 id: "65874d3d3c1d8f03287c807a"
+ *                 profilePicture: null
+ *       "401":
+ *         $ref: '#/components/responses/Unauthorized'
+ *       "403":
+ *         $ref: '#/components/responses/Forbidden'
+ *       "404":
+ *         $ref: '#/components/responses/NotFound'
+ */

@@ -61,3 +61,9 @@ export const updateUser = {
     .required()
     .options({ allowUnknown: false })
 };
+
+export const deleteUser = {
+  body: Joi.object().keys({
+    userId: Joi.string().custom(objectId)
+  })
+};

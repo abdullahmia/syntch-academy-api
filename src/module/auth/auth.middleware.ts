@@ -8,7 +8,6 @@ import { IUserDoc } from '../users';
 const verifyCallback =
   (req: Request, resolve: any, reject: any, requiredRights: string[]) =>
   async (err: Error, user: IUserDoc, info: string) => {
-    console.log('verifyCallback', err, user, info);
     if (err || info || !user) {
       return reject(new ApiError(httpStatus.UNAUTHORIZED, 'Please authenticate'));
     }
