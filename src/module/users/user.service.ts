@@ -1,5 +1,6 @@
 import httpStatus from 'http-status';
 import mongoose from 'mongoose';
+import { IOptions, QueryResult } from '../../plugin';
 import { ApiError } from '../../utils';
 import { IUserDoc, NewCreatedUser, UpdateUserBody } from './user.interface';
 import User from './user.model';
@@ -58,4 +59,18 @@ export const updateUserById = async (
   Object.assign(user, updateBody);
   await user.save();
   return user;
+};
+
+/**
+ * Query for users
+ * @param {Object} filter - Mongo filter
+ * @param {Object} options - Query options
+ * @returns {Promise<QueryResult>}
+ */
+export const queryUsers = async (
+  filter: Record<string, any>,
+  options: IOptions
+): Promise<QueryResult> => {
+  const users = await User.paginate(filter, options);
+  return users;
 };

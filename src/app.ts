@@ -7,6 +7,7 @@ import passport from 'passport';
 import swagger from 'swagger-ui-express';
 import config from './config';
 import { middleware as xss } from './middlewares';
+import { jwtStrategy } from './module/auth';
 import routes from './routes';
 import { specs } from './routes/docs.routes';
 import { ApiError, error, morgan } from './utils';
@@ -42,7 +43,7 @@ app.use('/docs', swagger.serve, swagger.setup(specs));
 
 // jwt authentication
 app.use(passport.initialize());
-// passport.use('jwt', jwtStrategy);
+passport.use('jwt', jwtStrategy);
 
 // serve static files
 app.use('/uploads', express.static('uploads'));

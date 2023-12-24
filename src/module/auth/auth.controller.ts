@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import httpStatus from 'http-status';
+import { TOKEN_TYPES } from '../../constants';
 import { generateToken } from '../../lib';
 import { catchAsync } from '../../utils';
 import { emailService } from '../email';
@@ -14,7 +15,8 @@ export const login = catchAsync(async (req: Request, res: Response) => {
     email: user.email,
     role: user.role,
     status: user.status,
-    username: user.username
+    username: user.username,
+    type: TOKEN_TYPES.ACCESS
   });
 
   res.send({ user, token });
