@@ -27,6 +27,7 @@ export const uploadMedia = async (file: string, path: string): Promise<Cloudinar
     });
     return result as CloudinaryUploadResult;
   } catch (error) {
+    console.log(error);
     throw error;
   }
 };

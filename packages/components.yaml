@@ -67,6 +67,53 @@ components:
       type: string
       example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ODc0ZDNkM2MxZDhmMDMyODdjODA3YSIsImVtYWlsIjoiYWJkdWxsYWhiYW5nMTk3MUBnbWFpbC5jb20iLCJyb2xlIjoidXNlciIsInN0YXR1cyI6ImFjdGl2ZSIsInVzZXJuYW1lIjoiam9obmRvZSIsImlhdCI6MTcwMzM5NzE0MCwiZXhwIjoxNzA0MDAxOTQwfQ.2IMB129_1_Pu1ldvCzIRq5yixTNt5l1zXNu_eY3VK6s
 
+    Folder:
+      type: object
+      properties:
+        name:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        id:
+          type: string
+        user:
+          type: string
+      example:
+        name: documents
+        createdAt: '2023-12-25T12:00:00.000Z'
+        updatedAt: '2023-12-25T12:00:00.000Z'
+        id: '1234567890abcdef12345678'
+        user: '1234567890abcdef12345678'
+
+    Media:
+      type: object
+      properties:
+        name:
+          type: string
+        user:
+          type: string
+        type:
+          type: string
+          enum: [image, video, audio, document, other]
+        publicId:
+          type: string
+        url:
+          type: string
+          format: uri
+        folder:
+          type: string
+      example:
+        name: Documnt.pdf
+        user: '1234567890abcdef12345678'
+        type: document
+        publicId: '1234567890abcdef12345678'
+        url: https://res.cloudinary.com/abdullahbang/image/upload/v1632500000/1234567890abcdef12345678.pdf
+        folder: '1234567890abcdef12345678'
+
     Error:
       type: object
       properties:

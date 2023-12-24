@@ -2,6 +2,7 @@ import { Router } from 'express';
 import config from '../config';
 import authRoutes from './auth.routes';
 import docsRoutes from './docs.routes';
+import mediaRoutes from './media.routes';
 import userRoutes from './user.routes';
 
 const router = Router();
@@ -19,6 +20,10 @@ const defaultRoutes: IRoute[] = [
   {
     path: '/auth',
     router: authRoutes
+  },
+  {
+    path: '/media',
+    router: mediaRoutes
   }
 ];
 
