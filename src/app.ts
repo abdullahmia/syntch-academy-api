@@ -10,6 +10,7 @@ import { middleware as xss } from './middlewares';
 import { jwtStrategy } from './module/auth';
 import routes from './routes';
 import { specs } from './routes/docs.routes';
+import './services/cache';
 import { ApiError, error, morgan } from './utils';
 
 const app = express();

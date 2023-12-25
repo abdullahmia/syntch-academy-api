@@ -1,7 +1,17 @@
 import { MEDIA_PATHS } from '../../constants';
 import { deleteMedia, uploadMedia } from '../../lib';
+import { getCachedData, setCachedData } from '../../services';
 import { IFolderDoc, IMediaDoc } from './media.interface';
 import { Folder, Media } from './media.model';
+
+/**
+ * GET THE CACHE KEY FOR FOLDER & MEDIA
+ */
+export const getFolderKeyByUser = (userId: string) => `user:${userId}:folder`;
+export const getMediaKeyByUser = (userId: string) => `user:${userId}:media`;
+export const getFolderAndMediaKeyByUser = (userId: string) => `user:${userId}:folder:media`;
+export const getMediaByFolderAndUserKey = (userId: string, folderId: string) =>
+  `user:${userId}:folder:${folderId}:media`;
 
 /**
  * add a new folder
@@ -10,6 +20,14 @@ import { Folder, Media } from './media.model';
  */
 export const createFolder = async (userId: string, name: string): Promise<IFolderDoc> => {
   const folder = await Folder.create({ user: userId, name });
+  const getFolderCache = await getCachedData(getFolderKeyByUser(userId));
+  if (getFolderCache) {
+    const newCachedData = [...getFolderCache, folder];
+    await setCachedData(getFolderKeyByUser(userId), newCachedData);
+  } else {
+    await setCachedData(getFolderKeyByUser(userId), [folder]);
+  }
+
   return folder;
 };
 
@@ -25,6 +43,16 @@ export const renameFolder = async (
   userId: string
 ): Promise<IFolderDoc | null> => {
   const folder = await Folder.findOneAndUpdate({ _id: id, user: userId }, { name }, { new: true });
+  const getFolderCache = await getCachedData(getFolderKeyByUser(userId));
+  if (getFolderCache) {
+    const newCachedData = getFolderCache.map((item: any) => {
+      if (item._id === id) {
+        return { ...item, name };
+      }
+      return item;
+    });
+    await setCachedData(getFolderKeyByUser(userId), newCachedData);
+  }
   return folder;
 };
 
@@ -44,11 +72,20 @@ export const addMedia = async (userId: string, file: any, folderId = ''): Promis
   if (uploadedFile.public_id) {
     const newMedia = await Media.create({
       user: userId,
-      folder: folderId,
+      folder: folderId ? folderId : undefined,
       name: file.originalname,
       publicId: uploadedFile.public_id,
       url: uploadedFile.secure_url
     });
+    // add this media to redis by user id & also folder id if exists
+    const getMediaByUserCache = await getCachedData(getMediaKeyByUser(userId));
+    if (getMediaByUserCache) {
+      const newCachedData = [...getMediaByUserCache, newMedia];
+      await setCachedData(getMediaKeyByUser(userId), newCachedData);
+    } else {
+      await setCachedData(getMediaKeyByUser(userId), [newMedia]);
+    }
+
     return await newMedia.populate('folder', 'name');
   } else {
     throw new Error('Error uploading file');
@@ -63,10 +100,20 @@ export const addMedia = async (userId: string, file: any, folderId = ''): Promis
  * @throws {ApiError}
  */
 export const getMediaFolderByUserId = async (userId: string) => {
-  const folders = await Folder.find({ user: userId });
-  const medias = await Media.find({ user: userId, folder: { $exists: false } });
+  const getMediaByUser = await getCachedData(getMediaKeyByUser(userId));
+  const getFolderByUser = await getCachedData(getFolderKeyByUser(userId));
 
-  return { folders, media: medias };
+  console.log({ getMediaByUser, getFolderByUser });
+
+  if (getMediaByUser && getFolderByUser) {
+    return { folders: getFolderByUser, media: getMediaByUser };
+  } else {
+    const folders = await Folder.find({ user: userId });
+    const medias = await Media.find({ user: userId, folder: { $exists: false } });
+    const data = { folders, media: medias };
+    await setCachedData(getFolderAndMediaKeyByUser(userId), data);
+    return data;
+  }
 };
 
 /**
@@ -77,9 +124,14 @@ export const getMediaFolderByUserId = async (userId: string) => {
  * @throws {Error}
  */
 export const getMediaByFolderAndUser = async (folderId: string, userId: string) => {
-  const medias = await Media.find({ folder: folderId, user: userId }).populate('folder', 'name');
-  console.log(medias);
-  return medias;
+  const getMediaCacheData = await getCachedData(getMediaByFolderAndUserKey(userId, folderId));
+  if (getMediaCacheData) {
+    return getMediaCacheData;
+  } else {
+    const medias = await Media.find({ folder: folderId, user: userId }).populate('folder', 'name');
+    await setCachedData(getMediaByFolderAndUserKey(userId, folderId), medias);
+    return medias;
+  }
 };
 
 /**
@@ -89,10 +141,16 @@ export const getMediaByFolderAndUser = async (folderId: string, userId: string) 
  * @throws {Error}
  */
 export const deleteMediaById = async (id: string, userId: string): Promise<IMediaDoc | null> => {
-  const media = await Media.findOne({ _id: id, user: userId });
-  await Media.findOneAndDelete({ _id: id, user: userId });
-  if (media?.publicId) {
+  const media = await Media.findOneAndDelete({ _id: id, user: userId });
+  if (media) {
     await deleteMedia(media.publicId);
+    const getMediaCacheData = await getCachedData(getMediaKeyByUser(userId));
+    if (getMediaCacheData) {
+      const newCachedData = getMediaCacheData.filter((item: any) => item._id !== id);
+      await setCachedData(getMediaKeyByUser(userId), newCachedData);
+    }
+    return media;
+  } else {
+    throw new Error('Media not found');
   }
-  return media;
 };
