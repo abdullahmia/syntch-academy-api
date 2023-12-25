@@ -2,6 +2,7 @@ import { Router } from 'express';
 import config from '../config';
 import authRoutes from './auth.routes';
 import docsRoutes from './docs.routes';
+import lmsRoutes from './lms';
 import mediaRoutes from './media.routes';
 import userRoutes from './user.routes';
 
@@ -24,6 +25,10 @@ const defaultRoutes: IRoute[] = [
   {
     path: '/media',
     router: mediaRoutes
+  },
+  {
+    path: '/lms',
+    router: lmsRoutes
   }
 ];
 
