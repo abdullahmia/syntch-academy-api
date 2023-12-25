@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { Redis } from 'ioredis';
+import config from '../config';
 
 export const cacheClient = new Redis();
 
@@ -11,8 +12,10 @@ export const getCachedData = async (key: string) => {
   return null;
 };
 
+const cacheAge = config.redis.age || 60 * 60 * 24;
+
 export const setCachedData = async (key: string, data: any) => {
-  await cacheClient.set(key, JSON.stringify(data));
+  await cacheClient.set(key, JSON.stringify(data), 'EX', cacheAge);
 };
 
 export const deleteCachedData = async (key: string) => {
@@ -20,5 +23,5 @@ export const deleteCachedData = async (key: string) => {
 };
 
 export const updateCachedData = async (key: string, data: any) => {
-  await cacheClient.set(key, JSON.stringify(data));
+  await cacheClient.set(key, JSON.stringify(data), 'EX', cacheAge);
 };

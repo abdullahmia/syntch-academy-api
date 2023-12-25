@@ -33,7 +33,8 @@ const envVarsSchema = Joi.object()
     CLIENT_URL: Joi.string().description('The URL of the client app'),
     CLOUDINARY_NAME: Joi.string().description('Cloudinary name'),
     CLOUDINARY_API_KEY: Joi.string().description('Cloudinary API key'),
-    CLOUDINARY_API_SECRET: Joi.string().description('Cloudinary API secret')
+    CLOUDINARY_API_SECRET: Joi.string().description('Cloudinary API secret'),
+    REDIS_AGE: Joi.number().description('Redis age')
   })
   .unknown();
 
@@ -72,7 +73,8 @@ export default {
   redis: {
     host: envVars.REDIS_HOST,
     port: envVars.REDIS_PORT,
-    password: envVars.REDIS_PASSWORD
+    password: envVars.REDIS_PASSWORD,
+    age: envVars.REDIS_AGE
   },
   clientUrl: envVars.CLIENT_URL,
   cloudinary: {

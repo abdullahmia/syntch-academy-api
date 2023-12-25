@@ -103,8 +103,6 @@ export const getMediaFolderByUserId = async (userId: string) => {
   const getMediaByUser = await getCachedData(getMediaKeyByUser(userId));
   const getFolderByUser = await getCachedData(getFolderKeyByUser(userId));
 
-  console.log({ getMediaByUser, getFolderByUser });
-
   if (getMediaByUser && getFolderByUser) {
     return { folders: getFolderByUser, media: getMediaByUser };
   } else {
