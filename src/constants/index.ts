@@ -30,3 +30,17 @@ export const COURSE_STATUSES = {
   PUBLISHED: 'published',
   UNPUBLISHED: 'unpublished'
 };
+
+// Course Enrollment
+export const ENROLLMENT_STATUSES = {
+  PENDING: 'pending',
+  APPROVED: 'approved',
+  REJECTED: 'rejected'
+};
+
+// Payment
+export const PAYMENT_STATUSES = {
+  PENDING: 'pending',
+  APPROVED: 'approved',
+  REJECTED: 'rejected'
+};

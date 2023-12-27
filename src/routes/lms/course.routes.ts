@@ -14,20 +14,6 @@ router.get('/:slug', courseController.getCourseBySlug);
 
 router.get('/my-courses', auth('manageCourses'), courseController.getCoursesByUserId);
 
-router.post(
-  '/:courseId/enroll',
-  auth('manageCourses'),
-  validate(couseValidator.enrollCourse),
-  courseController.enrollCourse
-);
-
-router.post(
-  '/:courseId/module',
-  [auth('manageCourses'), courseMiddleware.isCourseOwner],
-  validate(couseValidator.addModuleToCourse),
-  courseController.addModuletoCourse
-);
-
 router
   .route('/:courseId')
   .patch(
@@ -44,7 +30,7 @@ export default router;
 /**
  * @swagger
  * tags:
- *   name: Course
+ *   name: Courses
  *   description: Course management and retrieval
  */
 
@@ -273,66 +259,4 @@ export default router;
  *         $ref: '#/components/responses/NotFound'
  *       '500':
  *         $ref: '#/components/responses/InternalError'
- */
-
-/**
- * @swagger
- * /courses/{courseId}/enroll:
- *   post:
- *     summary: Enroll a student in a course
- *     tags:
- *       - Courses
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: courseId
- *         required: true
- *         schema:
- *           type: string
- *         description: ID of the course to enroll in
- *     responses:
- *       '200':
- *         description: Successfully enrolled in the course
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Course'
- *       '401':
- *         $ref: '#/components/responses/Unauthorized'
- *       '403':
- *         $ref: '#/components/responses/Forbidden'
- *       '404':
- *         $ref: '#/components/responses/NotFound'
- */
-
-/**
- * @swagger
- * /courses/{courseId}/module:
- *   post:
- *     summary: Add a module to a course
- *     tags:
- *       - Courses
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: courseId
- *         required: true
- *         schema:
- *           type: string
- *         description: ID of the course to add a module to
- *     responses:
- *       '201':
- *         description: Module successfully added to the course
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Course'
- *       '401':
- *         $ref: '#/components/responses/Unauthorized'
- *       '403':
- *         $ref: '#/components/responses/Forbidden'
- *       '404':
- *         $ref: '#/components/responses/NotFound'
  */

@@ -16,7 +16,7 @@ export const addNewCourse = async (payload: Partial<ICourse>): Promise<ICourse> 
  * @returns {Promise<Course[]>}
  */
 export const getAllCourses = async (): Promise<ICourse[]> => {
-  const courses = await Course.find({}).populate('instructor');
+  const courses = await Course.find({}).populate('instructor enrollments');
 
   return courses;
 };
