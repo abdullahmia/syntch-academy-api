@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import httpStatus from 'http-status';
 import passport from 'passport';
 import { roleRights } from '../../config/roles';
+import { USER_STATUSES } from '../../constants';
 import { ApiError } from '../../utils';
 import { IUserDoc } from '../users';
 
@@ -11,7 +12,14 @@ const verifyCallback =
     if (err || info || !user) {
       return reject(new ApiError(httpStatus.UNAUTHORIZED, 'Please authenticate'));
     }
+
     req.user = user;
+
+    if (user?.status !== USER_STATUSES.ACTIVE) {
+      return reject(
+        new ApiError(httpStatus.FORBIDDEN, 'Verify your email to activate your account')
+      );
+    }
 
     if (requiredRights.length) {
       const userRights = roleRights.get(user.role);
