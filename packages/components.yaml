@@ -163,6 +163,39 @@ components:
         url: https://res.cloudinary.com/abdullahbang/image/upload/v1632500000/1234567890abcdef12345678.pdf
         folder: '1234567890abcdef12345678'
 
+    Enrollment:
+      type: object
+      properties:
+        studentId:
+          type: string
+          description: ID of the student
+        courseId:
+          type: string
+          description: ID of the course
+        progress:
+          type: number
+          description: Progress of the student in the course
+        isCompleted:
+          type: boolean
+          description: Whether the course is completed by the student
+        payments:
+          type: object
+          description: Payment details (you may need to specify the structure)
+        paymentStatus:
+          type: string
+          description: Payment status
+        status:
+          type: string
+          description: Enrollment status
+      example:
+        studentId: '1234567890abcdef12345678'
+        courseId: '1234567890abcdef12345678'
+        progress: 75
+        isCompleted: true
+        payments: { /* specify payment structure here */ }
+        paymentStatus: 'paid'
+        status: 'active'
+
     Error:
       type: object
       properties:
@@ -208,6 +241,26 @@ components:
           example:
             code: 404
             message: Not found
+
+    InternalError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 500
+            message: Internal server error
+
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 400
+            message: Bad request
 
   securitySchemes:
     bearerAuth:
