@@ -89,6 +89,55 @@ components:
         id: '1234567890abcdef12345678'
         user: '1234567890abcdef12345678'
 
+    Course:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        duration:
+          type: number
+        price:
+          type: number
+        status:
+          type: string
+        category:
+          type: string
+        thumbnail:
+          type: object
+          properties:
+            public_id:
+              type: string
+            url:
+              type: string
+        instructor:
+          type: string
+        enrollments:
+          type: array
+          items:
+            type: string
+        modules:
+          type: array
+          items:
+            type: string
+        slug:
+          type: string
+      example:
+        title: 'Sample Course'
+        description: 'This is a sample course description.'
+        duration: 60
+        price: 49.99
+        status: 'active'
+        category: 'Programming'
+        thumbnail:
+          public_id: 'sample_thumbnail'
+          url: 'https://example.com/thumbnail.jpg'
+        instructor: '1234567890abcdef12345678'
+        enrollments: ['enrollment_id_1', 'enrollment_id_2']
+        modules: ['module_id_1', 'module_id_2']
+        slug: 'sample-course'
+
     Media:
       type: object
       properties:

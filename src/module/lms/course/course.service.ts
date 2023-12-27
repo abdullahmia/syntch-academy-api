@@ -15,21 +15,9 @@ export const addNewCourse = async (payload: Partial<ICourse>): Promise<ICourse> 
  * Get All courses
  * @returns {Promise<Course[]>}
  */
-export const geAllCourses = async (): Promise<ICourse[]> => {
-  const courses = await Course.find({})
-    .populate('instructor')
-    .populate({
-      path: 'enrollments',
-      populate: {
-        path: 'user'
-      }
-    })
-    .populate({
-      path: 'modules',
-      populate: {
-        path: 'lessons'
-      }
-    });
+export const getAllCourses = async (): Promise<ICourse[]> => {
+  const courses = await Course.find({}).populate('instructor');
+
   return courses;
 };
 
@@ -84,34 +72,7 @@ export const getCourseBySlug = async (slug: string): Promise<ICourse | null> => 
 };
 
 /**
- * Get Course by id
- * @param {string} id
- * @returns {Promise<ICourse>}
- */
-export const getCourseById = async (id: string): Promise<ICourse | null> => {
-  const course = await Course.findById(id)
-    .populate('instructor')
-    .populate({
-      path: 'modules',
-      populate: {
-        path: 'lessons'
-      }
-    })
-    .populate({
-      path: 'enrollments',
-      populate: {
-        path: 'user'
-      }
-    });
-
-  if (!course) {
-    return null;
-  }
-  return course;
-};
-
-/**
- * Update course by id
+ * Update Course by id
  * @param {string} id
  * @param {ICourse} course
  * @returns {Promise<ICourse>}
@@ -124,25 +85,33 @@ export const updateCourseById = async (
   if (!course) {
     return null;
   }
+
   const updatedCourse = await Course.findOneAndUpdate(
-    { _id: id },
-    { $set: payload },
-    { new: true }
-  );
-  return await updatedCourse
-    .populate('instructor')
-    .populate({
-      path: 'modules',
-      populate: {
-        path: 'lessons'
-      }
-    })
-    .populate({
-      path: 'enrollments',
-      populate: {
-        path: 'user'
-      }
-    });
+    {
+      _id: id
+    },
+    {
+      $set: payload
+    },
+    {
+      new: true
+    }
+  ).populate('instructor');
+
+  return updatedCourse;
+};
+
+/**
+ * Get Course by id
+ * @param {string} id
+ * @returns {Promise<ICourse>}
+ */
+export const getCourseById = async (id: string) => {
+  const course = await Course.findOne({ _id: id }).populate('instructor');
+  if (!course) {
+    return null;
+  }
+  return course;
 };
 
 /**
@@ -175,18 +144,24 @@ export const enrollUserToCourse = async (courseId: string, studentId: string) =>
     { $addToSet: { enrollments: studentId } },
     { new: true }
   );
-  return await updatedCourse
-    .populate('instructor')
-    .populate({
-      path: 'modules',
-      populate: {
-        path: 'lessons'
-      }
-    })
-    .populate({
-      path: 'enrollments',
-      populate: {
-        path: 'user'
-      }
-    });
+  return updatedCourse;
+};
+
+/**
+ * Add module to course
+ * @param {string} courseId
+ * @param {string} moduleId
+ * @returns {Promise<ICourse>}
+ */
+export const addModuleToCourse = async (courseId: string, moduleId: string) => {
+  const course = await getCourseById(courseId);
+  if (!course) {
+    return null;
+  }
+  const updatedCourse = await Course.findOneAndUpdate(
+    { _id: courseId },
+    { $addToSet: { modules: moduleId } },
+    { new: true }
+  ).populate('instructor');
+  return updatedCourse;
 };
