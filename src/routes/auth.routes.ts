@@ -1,5 +1,5 @@
 import express, { Router } from 'express';
-import { authController, authValidation } from '../module/auth';
+import { auth, authController, authValidation } from '../module/auth';
 import { validate } from '../validation';
 
 const router: Router = express.Router();
@@ -16,6 +16,13 @@ router.post(
   '/reset-password',
   validate(authValidation.resetPassword),
   authController.resetPassword
+);
+
+router.patch(
+  '/change-password',
+  auth('updateSelf'),
+  validate(authValidation.changePassword),
+  authController.changePassword
 );
 
 export default router;
@@ -279,4 +286,55 @@ export default router;
  *             example:
  *               code: 401
  *               message: Verify email failed
+ */
+
+/**
+ * @swagger
+ * /change-password:
+ *   patch:
+ *     summary: Change password for the authenticated user
+ *     tags:
+ *       - Auth
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - oldPassword
+ *               - newPassword
+ *             properties:
+ *               oldPassword:
+ *                 type: string
+ *                 description: Current password of the user
+ *               newPassword:
+ *                 type: string
+ *                 description: New password for the user
+ *             example:
+ *               oldPassword: 'currentPassword123'
+ *               newPassword: 'newPassword456'
+ *     responses:
+ *       '200':
+ *         description: Password successfully changed
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Success message
+ *                 user:
+ *                   $ref: '#/components/schemas/User'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '403':
+ *         $ref: '#/components/responses/Forbidden'
+ *       '500':
+ *         $ref: '#/components/responses/InternalError'
  */

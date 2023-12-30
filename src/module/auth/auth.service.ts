@@ -66,6 +66,22 @@ export const resetPassword = async (resetPasswordToken: any, newPassword: string
 };
 
 /**
+ * Change password with old password
+ * @param {string} userId
+ * @param {string} oldPassword
+ * @param {string} newPassword
+ * @returns {Promise<IUserDoc>}
+ */
+export const changePassword = async (userId: string, oldPassword: string, newPassword: string) => {
+  const user = await userService.getUserById(userId);
+  if (!user || !(await user.isPasswordMatch(oldPassword))) {
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'Current password is incorrect');
+  }
+  await userService.updateUserById(userId, { password: newPassword });
+  return user;
+};
+
+/**
  * Generate verification email token
  * @param {IUserDoc} user
  * @returns {Promise<string>}

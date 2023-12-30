@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import httpStatus from 'http-status';
+import { RequestUser } from '../../@types';
 import { TOKEN_TYPES } from '../../constants';
 import { generateToken } from '../../lib';
 import { catchAsync } from '../../utils';
@@ -45,4 +46,11 @@ export const resetPassword = catchAsync(async (req: Request, res: Response) => {
   res.status(httpStatus.NO_CONTENT).send({
     message: 'Password reset successful'
   });
+});
+
+export const changePassword = catchAsync(async (req: Request, res: Response) => {
+  const user = req.user as RequestUser;
+  const { oldPassword, newPassword } = req.body;
+  const updatedUser = await authService.changePassword(user.id, oldPassword, newPassword);
+  return res.status(httpStatus.OK).send(updatedUser);
 });

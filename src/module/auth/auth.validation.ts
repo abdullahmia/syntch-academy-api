@@ -48,3 +48,10 @@ export const resetPassword = {
     password: Joi.string().required().custom(password)
   })
 };
+
+export const changePassword = {
+  body: Joi.object().keys({
+    oldPassword: Joi.string().required().custom(password),
+    newPassword: Joi.string().required().custom(password)
+  })
+};
