@@ -20,7 +20,6 @@ const userSchema = new Schema<IUserDoc, IUserModel>(
     },
     username: {
       type: String,
-      required: [true, 'Username is required'],
       trim: true,
       maxlength: [50, 'Username cannot be more than 50 characters']
     },

@@ -19,7 +19,7 @@ const createUserBody = {
   password: Joi.string().required().custom(password),
   firstName: Joi.string().required(),
   lastName: Joi.string().required(),
-  username: Joi.string().required(),
+  username: Joi.string(),
   displayName: Joi.string(),
   occupation: Joi.string(),
   phoneNumber: Joi.string(),
