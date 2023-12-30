@@ -43,22 +43,19 @@ export const updateUser = {
   }),
   body: Joi.object()
     .keys({
-      email: Joi.string().email(),
-      password: Joi.string().custom(password),
-      firstName: Joi.string(),
-      lastName: Joi.string(),
-      username: Joi.string(),
-      displayName: Joi.string(),
-      occupation: Joi.string(),
-      phoneNumber: Joi.string(),
+      firstName: Joi.string().required(),
+      lastName: Joi.string().required(),
+      username: Joi.string().required(),
+      displayName: Joi.string().allow(''),
+      occupation: Joi.string().allow(''),
+      phoneNumber: Joi.string().required(),
       socialProfile: Joi.object({
-        linkedIn: Joi.string(),
-        github: Joi.string(),
-        website: Joi.string()
+        linkedIn: Joi.string().allow(''),
+        github: Joi.string().allow(''),
+        website: Joi.string().allow('')
       })
     })
     .min(1)
-    .required()
     .options({ allowUnknown: false })
 };
 
