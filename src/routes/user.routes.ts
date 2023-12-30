@@ -18,7 +18,7 @@ router.patch(
   userController.uploadProfilePicture
 );
 
-router.delete('/delete-profile-picture', auth('manageUsers'), userController.deleteProfilePicture);
+router.delete('/delete-profile-picture', auth('updateSelf'), userController.deleteProfilePicture);
 
 router
   .route('/:userId')

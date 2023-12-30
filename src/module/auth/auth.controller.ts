@@ -24,16 +24,9 @@ export const login = catchAsync(async (req: Request, res: Response) => {
 
 export const register = catchAsync(async (req: Request, res: Response) => {
   const user = await userService.createUser(req.body);
-  const token = await generateToken({
-    id: user._id,
-    email: user.email,
-    role: user.role,
-    status: user.status,
-    username: user.username
-  });
   const verificationEmailToken = await authService.generateVerificationEmailToken(user);
   await emailService.sendVerificationEmail(user.email, verificationEmailToken, user.username);
-  res.status(httpStatus.CREATED).send({ user, token });
+  res.status(httpStatus.CREATED).send({ data: user, message: 'User registered successfully' });
 });
 
 export const verifyEmail = catchAsync(async (req: Request, res: Response) => {
