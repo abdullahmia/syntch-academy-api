@@ -52,7 +52,7 @@ const userSchema = new Schema<IUserDoc, IUserModel>(
     status: {
       type: String,
       enum: Object.values(USER_STATUSES),
-      default: USER_STATUSES.INACTIVE
+      default: USER_STATUSES.ACTIVE
     },
     socialProfile: {
       linkedIn: {
