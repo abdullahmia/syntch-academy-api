@@ -16,9 +16,11 @@ const verifyCallback =
     req.user = user;
 
     if (user?.status !== USER_STATUSES.ACTIVE) {
-      return reject(
-        new ApiError(httpStatus.FORBIDDEN, 'Verify your email to activate your account')
-      );
+      if (req.route.path !== '/send-verification-email') {
+        return reject(
+          new ApiError(httpStatus.FORBIDDEN, 'Verify your email to activate your account')
+        );
+      }
     }
 
     if (requiredRights.length) {

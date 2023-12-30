@@ -26,6 +26,7 @@ export const loginWithEmailAndPassword = async (email: string, password: string)
 export const verifyEmail = async (verifyEmailToken: any) => {
   try {
     const decodedToken: any = await verifyToken(verifyEmailToken);
+    console.log(decodedToken);
     if (decodedToken.type !== TOKEN_TYPES.VERIFY_EMAIL) {
       throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid token');
     }
@@ -88,10 +89,11 @@ export const changePassword = async (userId: string, oldPassword: string, newPas
  */
 export const generateVerificationEmailToken = async (user: any) => {
   const paylaod = {
-    id: user?._id,
+    id: user?.id,
     email: user?.email,
     type: TOKEN_TYPES.VERIFY_EMAIL
   };
+  console.log(paylaod);
   const token = await generateToken(paylaod);
   return token;
 };

@@ -6,6 +6,7 @@ const router: Router = express.Router();
 
 router.post('/login', validate(authValidation.loginBody), authController.login);
 router.post('/register', validate(authValidation.createUser), authController.register);
+router.post('/send-verification-email', auth('updateSelf'), authController.sendVerificationEmail);
 router.post('/verify-email', validate(authValidation.verifyEmail), authController.verifyEmail);
 router.post(
   '/forgot-password',
@@ -247,6 +248,36 @@ export default router;
  *             example:
  *               code: 401
  *               message: Password reset failed
+ */
+
+/**
+ * @swagger
+ * /send-verification-email:
+ *   post:
+ *     summary: Send a verification email to the authenticated user
+ *     tags:
+ *       - Auth
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '200':
+ *         description: Verification email successfully sent
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Success message
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '403':
+ *         $ref: '#/components/responses/Forbidden'
+ *       '500':
+ *         $ref: '#/components/responses/InternalError'
  */
 
 /**
